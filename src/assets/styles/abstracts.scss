@@ -1,0 +1,29 @@
+@use 'sass:math';
+
+// Functions
+@function rem($pixel) {
+  @return math.div($pixel, 16) * 1rem;
+}
+
+// Dark theme colors
+
+$tomato: #ff7777;
+
+$bg-black: #101011;
+$muted-black: #1c1d1d;
+
+$text-white: #e7e7e7;
+$muted-white: #767677;
+
+$icon-grey: #707171;
+$border-grey: #292828;
+$primary-grey: rgba(0, 0, 0, 0.12);
+
+$primary-blue: #168fff;
+$muted-blue: #052441;
+
+$success-green: #16cb48;
+$muted-green: #073212;
+
+$deleted-red: #f74141;
+$muted-red: #3f1011;

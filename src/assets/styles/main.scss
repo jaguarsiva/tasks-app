@@ -1,0 +1,78 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+button {
+  background-color: transparent;
+  color: inherit;
+  border-width: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+html {
+  height: 100%;
+  font-family: 'Comfortaa', cursive;
+}
+
+body {
+  position: relative;
+  height: 100%;
+  background-color: $bg-black;
+  color: $text-white;
+}
+
+ul {
+  list-style-type: none;
+}
+
+// Skeleton loaders
+
+.skeleton {
+  background-color: $muted-white;
+}
+
+.skeleton-line,
+.skeleton-avatar {
+  -webkit-animation: skeleton 1s ease-in-out forwards infinite;
+  animation: skeleton 1s ease-in-out forwards infinite;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+}
+
+.skeleton-avatar {
+  width: 30px;
+  height: 30px;
+  background-color: #213243;
+  border-radius: 100%;
+  float: left;
+}
+
+.skeleton-line {
+  height: 0.7rem;
+  background-color: #213243;
+  border-radius: 3px;
+  margin-bottom: 0.3rem;
+}
+
+@keyframes skeleton {
+  0% {
+    opacity: 0.2;
+    transform: translateY(4px) scale(0.98);
+  }
+  85%,
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
