@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import useUserStore from '~/stores/user';
 
 interface Props {
@@ -85,12 +85,13 @@ function changeDate(type: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 28px 60px;
+  padding: 0 60px;
+  height: 70px;
 }
 
 .board-name {
-  font-size: rem(20);
-  font-weight: 500;
+  font-size: rem(22);
+  font-weight: 400;
   line-height: 1;
 }
 

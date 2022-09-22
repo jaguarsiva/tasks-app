@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import api from '~/utils/api';
+import useUserStore from '~/stores/user';
 import UserProfile from '~/components/boards/UserProfile.vue';
 import DatePane from '~/components/boards/DatePane.vue';
-import useUserStore from '~/stores/user';
+import TasksPane from '~/components/boards/TasksPane.vue';
 
 const isLoading = ref<Boolean>(true);
 const userStore = useUserStore();
@@ -36,6 +37,7 @@ onMounted(async () => {
       <UserProfile />
     </header>
     <DatePane :dateChosen="dateChosen" @update="updateDate" />
+    <TasksPane :date="dateChosen" />
   </div>
 </template>
 
@@ -43,17 +45,19 @@ onMounted(async () => {
 .page {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 60px;
+  padding: 0 60px;
+  height: 70px;
   border-bottom: 2px solid $border-grey;
 
   h1 {
-    font-size: rem(30);
+    font-size: rem(26);
     font-weight: 500;
     color: $text-white;
     line-height: 1;

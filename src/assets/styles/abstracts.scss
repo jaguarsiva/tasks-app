@@ -7,8 +7,6 @@
 
 // Dark theme colors
 
-$tomato: #ff7777;
-
 $bg-black: #101011;
 $muted-black: #1c1d1d;
 
@@ -22,8 +20,11 @@ $primary-grey: rgba(0, 0, 0, 0.12);
 $primary-blue: #168fff;
 $muted-blue: #052441;
 
-$success-green: #16cb48;
+$primary-green: #16cb48;
 $muted-green: #073212;
 
-$deleted-red: #f74141;
-$muted-red: #3f1011;
+$primary-red: #f74141;
+$muted-red: hsl(359, 59%, 15%);
+
+$primary-tomato: #ff7777;
+$muted-tomato: hsl(0, 100%, 15%);

@@ -1,5 +1,5 @@
 export default interface Task {
-  id: number;
+  id: string;
   userId: number;
   title: string;
   description: string;

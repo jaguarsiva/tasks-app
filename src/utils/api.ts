@@ -12,14 +12,13 @@ export function setHeader(userId: string) {
       return config;
     },
     function (error) {
-      console.log(error);
       return Promise.reject(error);
     }
   );
 }
 
 export function removeHeader() {
-  axiosInstance.interceptors.request.eject(myInterceptor);
+  axios.interceptors.request.eject(myInterceptor);
 }
 
 export default axiosInstance;

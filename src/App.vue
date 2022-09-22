@@ -5,7 +5,6 @@ import router from '~/router';
 
 onMounted(async () => {
   const userId = localStorage.getItem('userId');
-  console.log({ userId });
 
   if (userId) {
     router.push('/boards');
@@ -43,6 +42,7 @@ footer {
   align-items: center;
   justify-content: flex-end;
   position: absolute;
+  z-index: -1;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -52,7 +52,7 @@ footer {
 
 footer p {
   a {
-    color: $tomato;
+    color: $primary-tomato;
 
     &:hover {
       text-decoration: underline;
