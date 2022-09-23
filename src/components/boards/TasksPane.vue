@@ -109,8 +109,6 @@ function addTask(task: Task) {
 }
 
 function saveTask(task: Task) {
-  console.log('saveTask called', task);
-
   const foundTask = tasks.value.find(t => t.id === task.id);
   if (!foundTask) return;
 

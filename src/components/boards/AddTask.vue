@@ -28,7 +28,6 @@ async function add() {
       title: title.value,
       description: description.value
     };
-    console.log('saveTask', payload);
     const response = await api.post('tasks', payload);
     const task = response.data;
     emit('add', task);

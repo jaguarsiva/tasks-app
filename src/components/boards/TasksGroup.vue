@@ -38,8 +38,6 @@ function addTask(task: Task) {
 }
 
 function saveTask(task: Task) {
-  console.log('saveTask', task);
-
   emit('save', task);
 }
 </script>
