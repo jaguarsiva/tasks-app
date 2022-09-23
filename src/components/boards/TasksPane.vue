@@ -26,7 +26,9 @@ interface GroupsType {
 const initalValue = computed<GroupsType[]>(() => {
   const dateChosen = moment(props.date).format('DD/MM/YYYY');
   const todayDate = moment().format('DD/MM/YYYY');
+
   const isToday = dateChosen === todayDate;
+  const isFutureDate = moment(props.date).isAfter(moment());
 
   const results = [
     {
@@ -39,7 +41,7 @@ const initalValue = computed<GroupsType[]>(() => {
     }
   ];
 
-  if (isToday) {
+  if (isToday || isFutureDate) {
     results.unshift({
       title: 'active',
       tasks: []
@@ -78,7 +80,7 @@ async function fetchTasks(value: Date) {
 
 interface PayloadType {
   id: string;
-  type: 'complete' | 'push' | 'remove';
+  type: 'COMPLETED' | 'PUSHED' | 'REMOVED';
 }
 
 function update(payload: PayloadType) {
@@ -86,15 +88,12 @@ function update(payload: PayloadType) {
   const task = tasks.value.find(t => t.id === id);
   if (!task) return;
 
-  if (type === 'complete') {
-    task.status = 'COMPLETED';
-    updateTask(task.id, { status: 'COMPLETED' });
-  } else if (type === 'push') {
-    task.status = 'PUSHED';
+  task.status = type;
+  if (type === 'PUSHED') {
     pushTask(task.id);
   } else {
-    task.status = 'REMOVED';
-    updateTask(task.id, { status: 'REMOVED' });
+    const status = type;
+    updateTask(task.id, { status });
   }
 }
 

@@ -24,12 +24,18 @@ function update(type: string) {
 }
 
 function save(task: Task) {
-  console.log('save called', {
-    ...task
-  });
-
   isEditEnabled.value = false;
   emit('save', task);
+}
+
+function onDragStart(event: any) {
+  console.log('onDragStart');
+
+  if (task.value.status !== 'ACTIVE') return;
+
+  event.dataTransfer.dropEffect = 'move';
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('id', task.value.id);
 }
 </script>
 
@@ -40,7 +46,7 @@ function save(task: Task) {
     @save="save"
     @cancel="isEditEnabled = false"
   />
-  <div class="task-item" v-else>
+  <div class="task-item" draggable="true" @dragstart="onDragStart" v-else>
     <div class="row">
       <p class="task-title">{{ task.title }}</p>
     </div>
@@ -51,7 +57,7 @@ function save(task: Task) {
       <button
         class="btn check-btn"
         v-if="task.status === 'ACTIVE'"
-        @click="update('complete')"
+        @click="update('COMPLETED')"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +88,7 @@ function save(task: Task) {
       </button>
       <button
         class="btn push-btn"
-        @click="update('push')"
+        @click="update('PUSHED')"
         v-if="task.status === 'ACTIVE'"
       >
         <svg
@@ -99,7 +105,7 @@ function save(task: Task) {
           />
         </svg>
       </button>
-      <button class="btn remove-btn" @click="update('remove')">
+      <button class="btn remove-btn" @click="update('REMOVED')">
         <svg
           width="16"
           height="16"
@@ -131,6 +137,7 @@ function save(task: Task) {
   border-radius: 8px;
   padding: 12px 20px 16px;
   background-color: hsl(215, 21%, 14%);
+  cursor: pointer;
 }
 
 .task-title {

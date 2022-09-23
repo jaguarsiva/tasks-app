@@ -25,7 +25,7 @@ const isAddFormVisible = ref(false);
 
 interface UpdatePayloadType {
   id: string;
-  type: 'complete' | 'push' | 'remove';
+  type: 'COMPLETED' | 'PUSHED' | 'REMOVED';
 }
 
 function updateTask(payload: UpdatePayloadType) {
@@ -40,10 +40,24 @@ function addTask(task: Task) {
 function saveTask(task: Task) {
   emit('save', task);
 }
+
+function onDrop(event: any) {
+  console.log('onDrop');
+  const id = event.dataTransfer.getData('id');
+  console.log({ id });
+  let type: 'COMPLETED' | 'PUSHED' | 'REMOVED' = 'COMPLETED';
+  if (props.heading === 'active') return;
+  else type = props.heading.toUpperCase() as 'COMPLETED' | 'PUSHED' | 'REMOVED';
+
+  updateTask({
+    id,
+    type
+  });
+}
 </script>
 
 <template>
-  <div class="tasks-group">
+  <div class="tasks-group" @drop="onDrop" @dragover.prevent @dragenter.prevent>
     <div class="row">
       <h3 class="group-heading">
         {{ props.heading }}
