@@ -54,7 +54,8 @@ header {
   justify-content: space-between;
   padding: 0 60px;
   height: 70px;
-  border-bottom: 2px solid $border-grey;
+  border-bottom: 1px solid #2c3333;
+  background-color: #000;
 
   h1 {
     font-size: rem(26);

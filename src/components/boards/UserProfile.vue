@@ -9,23 +9,31 @@ const username = computed(() => {
 });
 
 function logout() {
-  userStore.logout();
   router.push('/');
+  userStore.logout();
 }
 </script>
 
 <template>
   <div class="user-profile">
-    <img
-      class="user-icon"
-      src="../../assets/images/male-avatar.gif"
-      alt="user icon"
-      v-if="username"
-    />
+    <template v-if="userStore.user">
+      <img
+        v-if="userStore.user.gender === 'MALE'"
+        class="user-icon"
+        src="../../assets/images/male-avatar.gif"
+        alt="user icon"
+      />
+      <img
+        v-else
+        src="../../assets/images/female-avatar.gif"
+        class="user-icon"
+        alt="user-icon"
+      />
+    </template>
     <div class="skeleton skeleton-avatar" v-else></div>
     <span class="user-name" v-if="username"> {{ username }} </span>
     <div class="skeleton skeleton-line" v-else></div>
-    <button class="btn-logout" @click="logout">
+    <button class="btn-logout" @click="logout" title="logout">
       <svg
         width="24"
         height="32"
@@ -63,7 +71,12 @@ function logout() {
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+}
+
+.skeleton-avatar {
+  height: 40px;
+  width: 40px;
 }
 
 .user-icon {
@@ -76,11 +89,10 @@ function logout() {
   font-weight: 600;
   color: $text-white;
   line-height: 1;
-  min-width: 140px;
 }
 
 .skeleton-line {
-  min-width: 140px;
+  min-width: 100px;
   min-height: 18px;
 }
 </style>

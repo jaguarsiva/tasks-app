@@ -39,7 +39,6 @@ async function add() {
 }
 
 async function save() {
-  console.log('save called');
   try {
     isLoading.value = true;
     const payload = {
@@ -58,9 +57,19 @@ async function save() {
 </script>
 
 <template>
-  <div class="task-item" :class="{ 'is-loading': isLoading }">
-    <input type="text" placeholder="Title" v-model="title" />
-    <input type="text" placeholder="Description" v-model="description" />
+  <div class="add-item" :class="{ 'is-loading': isLoading }">
+    <input
+      type="text"
+      class="title-input"
+      placeholder="Title"
+      v-model="title"
+    />
+    <input
+      type="text"
+      class="description-input"
+      placeholder="Description"
+      v-model="description"
+    />
     <div class="btns-row">
       <button class="btn add-btn" v-if="title.trim()" @click="add">
         {{ props.task ? 'Save' : 'Add' }}
@@ -71,12 +80,13 @@ async function save() {
 </template>
 
 <style lang="scss" scoped>
-.task-item {
+.add-item {
   display: flex;
   flex-direction: column;
   border-radius: 8px;
-  padding: 12px 20px 16px;
-  background-color: hsl(215, 21%, 14%);
+  padding: 12px 20px 16px 12px;
+  background-color: hsl(200, 6%, 8%);
+  box-shadow: 0 0 2px 0.75px rgb(51, 51, 51);
 }
 
 input {
@@ -85,18 +95,23 @@ input {
   border-bottom: 2px solid transparent;
   outline: none;
   margin-bottom: 12px;
-  font-size: rem(18);
-  font-weight: 500;
-  color: $text-white;
   padding: 4px 12px;
 
   &:focus {
     border-bottom: 2px solid $primary-blue;
   }
+}
 
-  &::placeholder {
-    font-weight: 400;
-  }
+.title-input {
+  font-size: rem(18);
+  font-weight: 600;
+  color: $text-white;
+}
+
+.description-input {
+  font-size: rem(16);
+  font-weight: 400;
+  color: $muted-white;
 }
 
 .btns-row {

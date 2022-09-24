@@ -3,4 +3,5 @@ export default interface User {
   username: string;
   fullname: string;
   createdOn: string;
+  gender: 'MALE' | 'FEMALE';
 }

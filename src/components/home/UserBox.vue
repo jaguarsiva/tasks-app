@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import useUserStore from '~/stores/user';
 import type User from '~/utils/types/User.type';
@@ -20,7 +21,14 @@ function loginUser() {
 <template>
   <button class="user-box" @click="loginUser">
     <img
+      v-if="user.gender === 'MALE'"
       src="../../assets/images/male-avatar.gif"
+      class="user-icon"
+      alt="user-icon"
+    />
+    <img
+      v-else
+      src="../../assets/images/female-avatar.gif"
       class="user-icon"
       alt="user-icon"
     />
@@ -42,9 +50,10 @@ function loginUser() {
 }
 
 .user-name {
-  font-size: rem(20);
-  font-weight: 500;
+  font-size: rem(18);
+  font-weight: 300;
+  font-style: italic;
   color: $muted-white;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 </style>

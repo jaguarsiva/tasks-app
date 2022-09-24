@@ -1,22 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import UserBox from '~/components/home/UserBox.vue';
-import api from '~/utils/api';
-import type User from '~/utils/types/User.type';
+import useUserStore from '~/stores/user';
 
-const users = ref<User[]>([]);
-const isLoading = ref<Boolean>(true);
+const userStore = useUserStore();
 
-onMounted(async () => {
-  try {
-    isLoading.value = true;
-    const response = await api.get('users');
-    users.value = response.data.users;
-  } catch (error) {
-    console.log(error);
-  } finally {
-    isLoading.value = false;
-  }
+onMounted(() => {
+  if (!userStore.isUsersFetched) userStore.fetchUsers();
 });
 </script>
 
@@ -25,9 +15,9 @@ onMounted(async () => {
     <section class="page-content">
       <h1>Welcome Back! 😎</h1>
       <p>Please choose your account</p>
-      <span class="loading-text" v-if="isLoading">Loading...</span>
+      <span class="loading-text" v-if="userStore.isLoading">Loading...</span>
       <ul v-else class="users-list">
-        <li v-for="user in users" :key="user.id">
+        <li v-for="user in userStore.users" :key="user.id">
           <UserBox :user="user" />
         </li>
       </ul>
@@ -63,7 +53,7 @@ onMounted(async () => {
     font-size: rem(20);
     color: $muted-white;
     line-height: 1.6;
-    margin: 8px 0 28px;
+    margin: 8px 0 40px;
   }
 
   .users-list {
@@ -89,7 +79,6 @@ onMounted(async () => {
     height: 100%;
     width: 100%;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba($color: $text-white, $alpha: 0.15);
   }
 }
 </style>

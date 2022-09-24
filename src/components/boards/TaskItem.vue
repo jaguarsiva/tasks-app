@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import type Task from '~/utils/types/Task.type';
 import AddTask from '~/components/boards/AddTask.vue';
+import moment from 'moment';
 
 interface Props {
   task: Task;
@@ -11,6 +12,16 @@ const emit = defineEmits(['update', 'edit', 'save']);
 
 const task = computed(() => {
   return props.task;
+});
+
+const showPushBack = computed(() => {
+  const today = moment().format('DD/MM/YYYY');
+  return task.value.status === 'PUSHED' && task.value.date === today;
+});
+
+const showRemove = computed(() => {
+  const today = moment().format('DD/MM/YYYY');
+  return task.value.date === today;
 });
 
 const isEditEnabled = ref(false);
@@ -29,8 +40,6 @@ function save(task: Task) {
 }
 
 function onDragStart(event: any) {
-  console.log('onDragStart');
-
   if (task.value.status !== 'ACTIVE') return;
 
   event.dataTransfer.dropEffect = 'move';
@@ -55,9 +64,10 @@ function onDragStart(event: any) {
     </div>
     <div class="task-actions">
       <button
-        class="btn check-btn"
+        class="btn check-btn tooltip"
         v-if="task.status === 'ACTIVE'"
         @click="update('COMPLETED')"
+        data-tooltip-value="Mark as Complete"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,9 +81,10 @@ function onDragStart(event: any) {
         </svg>
       </button>
       <button
-        class="btn edit-btn"
+        class="btn edit-btn tooltip"
         v-if="task.status === 'ACTIVE'"
         @click="isEditEnabled = true"
+        data-tooltip-value="Edit Task"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -87,9 +98,22 @@ function onDragStart(event: any) {
         </svg>
       </button>
       <button
-        class="btn push-btn"
+        class="btn push-btn push-back-btn tooltip"
+        @click="update('ACTIVE')"
+        v-if="showPushBack"
+        data-tooltip-value="Bring Back to Active"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M11.46,8.29a1,1,0,0,0-1.42,0l-3,3a1,1,0,0,0,0,1.42l3,3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42L9.16,12l2.3-2.29A1,1,0,0,0,11.46,8.29ZM14.66,12,17,9.71a1,1,0,0,0-1.42-1.42l-3,3a1,1,0,0,0,0,1.42l3,3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z"
+          />
+        </svg>
+      </button>
+      <button
+        class="btn push-btn tooltip"
         @click="update('PUSHED')"
         v-if="task.status === 'ACTIVE'"
+        data-tooltip-value="Push to Tomorrow"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +129,12 @@ function onDragStart(event: any) {
           />
         </svg>
       </button>
-      <button class="btn remove-btn" @click="update('REMOVED')">
+      <button
+        class="btn remove-btn tooltip"
+        @click="update('REMOVED')"
+        v-if="showRemove"
+        data-tooltip-value="Remove"
+      >
         <svg
           width="16"
           height="16"
@@ -136,27 +165,29 @@ function onDragStart(event: any) {
   flex-direction: column;
   border-radius: 8px;
   padding: 12px 20px 16px;
-  background-color: hsl(215, 21%, 14%);
+  background-color: hsl(200, 6%, 8%);
+  box-shadow: 0 0 2px 0.75px rgb(51, 51, 51);
   cursor: pointer;
 }
 
 .task-title {
-  font-size: rem(20);
+  font-size: rem(18);
   font-weight: 600;
   line-height: 1.6;
   color: $text-white;
 }
 
 .task-description {
-  font-size: rem(14);
-  font-weight: 600;
+  font-size: rem(16);
+  font-weight: 400;
   line-height: 1.6;
   color: $muted-white;
-  margin-bottom: 8px;
+  margin: 4px 0 8px;
 }
 
 .task-actions {
   display: flex;
+  height: 28px;
   gap: 8px;
   opacity: 0;
   pointer-events: none;
@@ -168,7 +199,6 @@ function onDragStart(event: any) {
   }
 
   button {
-    box-shadow: 0 !important;
     background-color: $icon-grey;
     border-radius: 50%;
     height: 28px;
@@ -176,6 +206,7 @@ function onDragStart(event: any) {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 2px rgb(51, 51, 51);
   }
 
   .check-btn {
@@ -195,10 +226,10 @@ function onDragStart(event: any) {
   }
 
   .push-btn {
-    background-color: $muted-tomato;
+    background-color: $muted-orange;
 
     svg path {
-      fill: $primary-tomato;
+      fill: $primary-orange;
     }
   }
 
@@ -211,7 +242,28 @@ function onDragStart(event: any) {
   }
 
   .btn:hover {
-    opacity: 0.8;
+    opacity: 0.5;
+  }
+}
+
+.tooltip {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    width: fit-content;
+    top: calc(100% + 4px);
+    right: 100%;
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #2c3333;
+    padding: 4px 6px;
+    opacity: 1 !important;
+    white-space: nowrap;
+  }
+
+  &:hover::before {
+    content: attr(data-tooltip-value);
   }
 }
 </style>

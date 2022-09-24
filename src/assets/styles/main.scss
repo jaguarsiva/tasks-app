@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: none;
+  font-family: 'Comfortaa', cursive;
 }
 
 a {
@@ -23,18 +24,23 @@ button {
 
 html {
   height: 100%;
-  font-family: 'Comfortaa', cursive;
 }
 
 body {
   position: relative;
   height: 100%;
-  background-color: $bg-black;
+  // background-color: $bg-black;
+  background-color: #111;
   color: $text-white;
 }
 
 ul {
   list-style-type: none;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
 }
 
 ::-webkit-scrollbar {
@@ -46,10 +52,6 @@ ul {
 
 .skeleton {
   background-color: $muted-white;
-}
-
-.skeleton-line,
-.skeleton-avatar {
   -webkit-animation: skeleton 1s ease-in-out forwards infinite;
   animation: skeleton 1s ease-in-out forwards infinite;
   -webkit-animation-direction: alternate;
@@ -57,11 +59,8 @@ ul {
 }
 
 .skeleton-avatar {
-  width: 30px;
-  height: 30px;
   background-color: #213243;
   border-radius: 100%;
-  float: left;
 }
 
 .skeleton-line {

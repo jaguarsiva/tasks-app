@@ -2,8 +2,12 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { setHeader, removeHeader } from '~/utils/api';
 import type User from '~/utils/types/User.type';
+import api from '~/utils/api';
 
 const useUserStore = defineStore('user', () => {
+  const users = ref<User[]>([]);
+  const isLoading = ref<Boolean>(false);
+  const isUsersFetched = ref<Boolean>(false);
   const user = ref<User | null>(null);
 
   const firstName = computed(() => {
@@ -32,7 +36,31 @@ const useUserStore = defineStore('user', () => {
     removeHeader();
   }
 
-  return { firstName, username, isLoggedIn, login, logout };
+  async function fetchUsers() {
+    try {
+      isLoading.value = true;
+      const response = await api.get('users');
+      users.value = response.data.users;
+      isUsersFetched.value = true;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  return {
+    firstName,
+    username,
+    isLoggedIn,
+    user,
+    login,
+    logout,
+    fetchUsers,
+    users,
+    isLoading,
+    isUsersFetched
+  };
 });
 
 export default useUserStore;
