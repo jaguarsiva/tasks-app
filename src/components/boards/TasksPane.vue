@@ -80,7 +80,7 @@ async function fetchTasks(value: Date) {
 
 interface PayloadType {
   id: string;
-  type: 'COMPLETED' | 'PUSHED' | 'REMOVED';
+  type: 'ACTIVE' | 'COMPLETED' | 'PUSHED' | 'REMOVED';
 }
 
 function update(payload: PayloadType) {
@@ -88,8 +88,11 @@ function update(payload: PayloadType) {
   const task = tasks.value.find(t => t.id === id);
   if (!task) return;
 
+  const oldStatus = task.status;
   task.status = type;
-  if (type === 'PUSHED') {
+  if (type === 'ACTIVE' && oldStatus === 'PUSHED') {
+    bringBackTask(task.id);
+  } else if (type === 'PUSHED') {
     pushTask(task.id);
   } else {
     const status = type;
@@ -126,6 +129,14 @@ async function updateTask(id: string, fieldsToUpdate: UpdateType) {
 async function pushTask(id: string) {
   try {
     await api.patch(`tasks/${id}/push`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function bringBackTask(id: string) {
+  try {
+    await api.delete(`tasks/${id}/push`);
   } catch (error) {
     console.log(error);
   }

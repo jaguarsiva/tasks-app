@@ -14,12 +14,7 @@ const task = computed(() => {
   return props.task;
 });
 
-const showPushBack = computed(() => {
-  const today = moment().format('DD/MM/YYYY');
-  return task.value.status === 'PUSHED' && task.value.date === today;
-});
-
-const showRemove = computed(() => {
+const isTodayTask = computed(() => {
   const today = moment().format('DD/MM/YYYY');
   return task.value.date === today;
 });
@@ -62,7 +57,7 @@ function onDragStart(event: any) {
     <div class="row" v-if="task.description">
       <p class="task-description">{{ task.description }}</p>
     </div>
-    <div class="task-actions">
+    <div class="task-actions" v-if="isTodayTask">
       <button
         class="btn check-btn tooltip"
         v-if="task.status === 'ACTIVE'"
@@ -100,7 +95,7 @@ function onDragStart(event: any) {
       <button
         class="btn push-btn push-back-btn tooltip"
         @click="update('ACTIVE')"
-        v-if="showPushBack"
+        v-if="['COMPLETED', 'PUSHED'].includes(task.status)"
         data-tooltip-value="Bring Back to Active"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -132,7 +127,6 @@ function onDragStart(event: any) {
       <button
         class="btn remove-btn tooltip"
         @click="update('REMOVED')"
-        v-if="showRemove"
         data-tooltip-value="Remove"
       >
         <svg

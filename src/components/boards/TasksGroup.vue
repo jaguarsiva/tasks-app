@@ -25,7 +25,7 @@ const isAddFormVisible = ref(false);
 
 interface UpdatePayloadType {
   id: string;
-  type: 'COMPLETED' | 'PUSHED' | 'REMOVED';
+  type: 'ACTIVE' | 'COMPLETED' | 'PUSHED' | 'REMOVED';
 }
 
 const taskGroupEl = ref<HTMLDivElement | null>(null);
