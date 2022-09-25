@@ -13,9 +13,15 @@ onMounted(() => {
 <template>
   <div class="page">
     <section class="page-content">
-      <h1>Welcome Back! 😎</h1>
+      <h1>Welcome Back! 🦜</h1>
       <p>Please choose your account</p>
-      <span class="loading-text" v-if="userStore.isLoading">Loading...</span>
+      <!-- <span class="loading-text" v-if="!userStore.isLoading">Loading...</span> -->
+      <ul v-if="userStore.isLoading" class="loader-list">
+        <li v-for="i in 2" :key="i">
+          <div class="skeleton skeleton-avatar"></div>
+          <div class="skeleton skeleton-line"></div>
+        </li>
+      </ul>
       <ul v-else class="users-list">
         <li v-for="user in userStore.users" :key="user.id">
           <UserBox :user="user" />
@@ -60,12 +66,6 @@ onMounted(() => {
     display: flex;
     gap: 28px;
   }
-
-  .loading-text {
-    font-size: rem(20);
-    color: $muted-white;
-    line-height: 131px;
-  }
 }
 
 .page-image {
@@ -80,5 +80,27 @@ onMounted(() => {
     width: 100%;
     border-radius: 8px;
   }
+}
+
+.loader-list {
+  display: flex;
+  gap: 28px;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.skeleton-avatar {
+  height: 100px;
+  width: 100px;
+}
+
+.skeleton-line {
+  height: 20px;
+  width: 120px;
+  margin-top: 16px;
 }
 </style>
