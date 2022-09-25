@@ -22,8 +22,9 @@ onMounted(async () => {
     const response = await api.get(`users/${userId}`);
     const user = response.data.user;
     userStore.login(user);
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    if (error.response.status === 400) userStore.logout();
   } finally {
     isLoading.value = false;
   }

@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import useUserStore from '~/stores/user';
-import router from '~/router';
 
 const userStore = useUserStore();
-const username = computed(() => {
-  return userStore.username || '';
-});
+const username = computed(() => userStore.username);
 
-function logout() {
-  router.push('/');
-  userStore.logout();
-}
+const logout = userStore.logout;
 </script>
 
 <template>

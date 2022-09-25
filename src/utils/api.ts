@@ -1,24 +1,16 @@
 import axios from 'axios';
+import useUserStore from '~/stores/user';
 
-const axiosInstance = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_SERVER
 });
 
-let myInterceptor: number;
-export function setHeader(userId: string) {
-  myInterceptor = axiosInstance.interceptors.request.use(
-    function (config) {
-      config.headers!.user_id = userId;
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
-}
+api.interceptors.request.use(config => {
+  const userStore = useUserStore();
+  if (userStore.user) {
+    config.headers!.user_id = userStore.user.id;
+  }
+  return config;
+});
 
-export function removeHeader() {
-  axios.interceptors.request.eject(myInterceptor);
-}
-
-export default axiosInstance;
+export default api;

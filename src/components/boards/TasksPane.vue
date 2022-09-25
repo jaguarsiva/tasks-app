@@ -71,7 +71,7 @@ async function fetchTasks(value: Date) {
     tasks.value = [];
     const response = await api.get(`tasks?date=${date}`);
     tasks.value = response.data.tasks;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
   } finally {
     isLoading.value = false;
