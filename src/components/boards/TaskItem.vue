@@ -21,11 +21,11 @@ const isTodayTask = computed(() => {
 
 const isEditEnabled = ref(false);
 
-function update(type: string) {
+function update(status: string) {
   isEditEnabled.value = true;
   emit('update', {
     id: task.value.id,
-    type
+    status
   });
 }
 
@@ -35,7 +35,7 @@ function save(task: Task) {
 }
 
 function onDragStart(event: any) {
-  if (task.value.status !== 'ACTIVE') return;
+  if (!isTodayTask.value) return;
 
   event.dataTransfer.dropEffect = 'move';
   event.dataTransfer.effectAllowed = 'move';
@@ -128,6 +128,7 @@ function onDragStart(event: any) {
         class="btn remove-btn tooltip"
         @click="update('REMOVED')"
         data-tooltip-value="Remove"
+        v-if="task.status === 'ACTIVE'"
       >
         <svg
           width="16"

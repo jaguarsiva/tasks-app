@@ -1,33 +1,41 @@
 <script lang="ts" setup>
 import { ref, computed, nextTick } from 'vue';
+import type Task from '~/utils/types/Task.type';
+import { TaskStatus } from '~/utils/types/Task.type';
 import TaskItem from '~/components/boards/TaskItem.vue';
 import AddTask from '~/components/boards/AddTask.vue';
-import type Task from '~/utils/types/Task.type';
+import moment from 'moment';
 
 interface Props {
   heading: string;
   tasks: Task[];
   isLoading: Boolean;
+  date: Date;
 }
 const emit = defineEmits(['add', 'update', 'save']);
-
 const props = withDefaults(defineProps<Props>(), {
   heading: '',
   tasks: () => [],
-  isLoading: () => false
+  isLoading: () => false,
+  date: () => new Date()
 });
 
-const badgeClassName = computed(() => {
-  return props.heading.toLowerCase() + '-badge';
+const badgeClassName = computed(() => props.heading.toLowerCase() + '-badge');
+
+const isAddButtonVisible = computed(() => {
+  const dateChosen = moment(props.date).format('DD/MM/YYYY');
+  const todayDate = moment().format('DD/MM/YYYY');
+
+  const isToday = dateChosen === todayDate;
+  return (
+    props.heading === 'active' &&
+    !isAddFormVisible.value &&
+    !props.isLoading &&
+    isToday
+  );
 });
 
 const isAddFormVisible = ref(false);
-
-interface UpdatePayloadType {
-  id: string;
-  type: 'ACTIVE' | 'COMPLETED' | 'PUSHED' | 'REMOVED';
-}
-
 const taskGroupEl = ref<HTMLDivElement | null>(null);
 
 function showAddTask() {
@@ -42,6 +50,11 @@ async function scrollGroup() {
     behavior: 'smooth',
     top: element.scrollHeight
   });
+}
+
+interface UpdatePayloadType {
+  id: string;
+  status: TaskStatus;
 }
 
 function updateTask(payload: UpdatePayloadType) {
@@ -60,14 +73,8 @@ function saveTask(task: Task) {
 
 function onDrop(event: any) {
   const id = event.dataTransfer.getData('id');
-  let type: 'COMPLETED' | 'PUSHED' | 'REMOVED' = 'COMPLETED';
-  if (props.heading === 'active') return;
-  else type = props.heading.toUpperCase() as 'COMPLETED' | 'PUSHED' | 'REMOVED';
-
-  updateTask({
-    id,
-    type
-  });
+  const status = props.heading.toUpperCase() as TaskStatus;
+  updateTask({ id, status });
 }
 </script>
 
@@ -86,7 +93,7 @@ function onDrop(event: any) {
       <div class="row-controls">
         <button
           class="btn add-btn"
-          v-if="props.heading === 'active' && !isAddFormVisible"
+          v-if="isAddButtonVisible"
           @click="showAddTask"
         >
           Add

@@ -5,8 +5,9 @@ import moment from 'moment';
 import TasksGroups from '~/components/boards/TasksGroup.vue';
 import api from '~/utils/api';
 import useUserStore from '~/stores/user';
+import lodash, { remove } from 'lodash';
 import type Task from '~/utils/types/Task.type';
-import lodash from 'lodash';
+import { TaskStatus } from '~/utils/types/Task.type';
 
 interface Props {
   date: Date;
@@ -30,28 +31,16 @@ const initalValue = computed<GroupsType[]>(() => {
   const isToday = dateChosen === todayDate;
   const isFutureDate = moment(props.date).isAfter(moment());
 
-  const results = [
-    {
-      title: 'completed',
-      tasks: []
-    },
-    {
-      title: 'pushed',
-      tasks: []
-    }
-  ];
+  let results = [];
 
-  if (isToday || isFutureDate) {
-    results.unshift({
-      title: 'active',
-      tasks: []
-    });
-  } else {
-    results.push({
-      title: 'removed',
-      tasks: []
-    });
-  }
+  const active = { title: 'active', tasks: [] };
+  const completed = { title: 'completed', tasks: [] };
+  const pushed = { title: 'pushed', tasks: [] };
+  const removed = { title: 'removed', tasks: [] };
+
+  if (isToday) results.push(active, completed, pushed);
+  else if (isFutureDate) results.push(active);
+  else results.push(completed, pushed, removed);
 
   return results;
 });
@@ -78,32 +67,32 @@ async function fetchTasks(value: Date) {
   }
 }
 
-interface PayloadType {
+interface UpdatePayloadType {
   id: string;
-  type: 'ACTIVE' | 'COMPLETED' | 'PUSHED' | 'REMOVED';
+  status: TaskStatus;
 }
 
-function update(payload: PayloadType) {
-  const { id, type } = payload;
-  const task = tasks.value.find(t => t.id === id);
-  if (!task) return;
-
+function update({ id, status: newStatus }: UpdatePayloadType) {
+  const task = tasks.value.find(t => t.id === id)!;
   const oldStatus = task.status;
-  task.status = type;
-  if (type === 'ACTIVE' && oldStatus === 'PUSHED') {
-    bringBackTask(task.id);
-  } else if (type === 'PUSHED') {
-    pushTask(task.id);
-  } else {
-    const status = type;
-    updateTask(task.id, { status });
-  }
-}
 
-interface UpdateType {
-  title?: string;
-  description?: string;
-  status?: string;
+  if (oldStatus === TaskStatus.ACTIVE) {
+    if (newStatus === TaskStatus.PUSHED) pushTask(id);
+    else updateTask(id, { status: newStatus });
+  } else if (
+    oldStatus === TaskStatus.PUSHED &&
+    newStatus === TaskStatus.ACTIVE
+  ) {
+    bringBackTask(id);
+  } else if (
+    oldStatus === TaskStatus.COMPLETED &&
+    newStatus === TaskStatus.ACTIVE
+  ) {
+    updateTask(id, { status: newStatus });
+  } else {
+    return; // update operation not allowed
+  }
+  task.status = newStatus;
 }
 
 function addTask(task: Task) {
@@ -116,6 +105,12 @@ function saveTask(task: Task) {
 
   foundTask.title = task.title;
   foundTask.description = task.description;
+}
+
+interface UpdateType {
+  title?: string;
+  description?: string;
+  status?: string;
 }
 
 async function updateTask(id: string, fieldsToUpdate: UpdateType) {
@@ -168,6 +163,7 @@ watch(
       :heading="group.title"
       :is-loading="isLoading"
       :tasks="group.tasks"
+      :date="props.date"
       @update="update"
       @add="addTask"
       @save="saveTask"
