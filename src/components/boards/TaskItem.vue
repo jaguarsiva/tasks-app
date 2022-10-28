@@ -10,9 +10,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(['update', 'edit', 'save']);
 
-const task = computed(() => {
-  return props.task;
-});
+const task = computed(() => props.task);
 
 const isTodayTask = computed(() => {
   const today = moment().format('DD/MM/YYYY');

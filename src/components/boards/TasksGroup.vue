@@ -36,6 +36,7 @@ const isAddButtonVisible = computed(() => {
 });
 
 const isAddFormVisible = ref(false);
+const isDropZone = ref(false);
 const taskGroupEl = ref<HTMLDivElement | null>(null);
 
 function showAddTask() {
@@ -76,15 +77,27 @@ function onDrop(event: any) {
   const status = props.heading.toUpperCase() as TaskStatus;
   updateTask({ id, status });
 }
+
+function dragEnter() {
+  console.log('dragEnter called');
+  isDropZone.value = true;
+}
+
+function dragLeave() {
+  console.log('dragLeave called');
+  isDropZone.value = false;
+}
 </script>
 
 <template>
   <div
     class="tasks-group"
+    :class="{ 'is-dragging': isDropZone }"
     ref="taskGroupEl"
-    @drop="onDrop"
+    @dragenter.prevent="dragEnter"
+    @dragleave.prevent="dragLeave"
     @dragover.prevent
-    @dragenter.prevent
+    @drop="onDrop"
   >
     <div class="row">
       <h3 class="group-heading">
@@ -159,6 +172,10 @@ function onDrop(event: any) {
   overflow-y: scroll;
   border: 1px solid #2c3333;
   padding-bottom: 24px;
+
+  &.is-dragging {
+    border: 2px dashed $primary-green !important;
+  }
 }
 
 .row {
